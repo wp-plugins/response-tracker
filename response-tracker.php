@@ -16,10 +16,10 @@
 */
 
 /*
-    Plugin Name: Comment Tracker
+    Plugin Name: Response Tracker
     Plugin URI:http://ahren.org/code/response-tracker
     Description: A plugin to keep track of responses to comments in the dashboard
-    Version: 0.81
+    Version: 0.82
     Author: Ravi Sarma
     Author URI: http://ahren.org/code/
 */

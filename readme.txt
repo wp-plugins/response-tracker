@@ -53,6 +53,10 @@ Another possible line of future development is to also add links in the post com
 
 == Changelog ==
 
+= 0.82 =
+
+* Fixed wrong name in the plugin main file comment block :-(
+
 = 0.81 =
 
 * Fixed typo in plugin URL
