@@ -53,6 +53,10 @@ Another possible line of future development is to also add links in the post com
 
 == Changelog ==
 
+= 0.81 =
+
+* Fixed typo in plugin URL
+
 = 0.8 =
 
 * First release of the plugin.
