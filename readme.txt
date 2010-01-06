@@ -53,6 +53,12 @@ Another possible line of future development is to also add links in the post com
 
 == Changelog ==
 
+= 0.90 =
+
+* Added highlighting/colouring for AJAX submitted replies
+* Added explanation/legend in settings page
+* Other minor fixes 
+
 = 0.82 =
 
 * Fixed wrong name in the plugin main file comment block :-(
@@ -64,4 +70,8 @@ Another possible line of future development is to also add links in the post com
 = 0.8 =
 
 * First release of the plugin.
+
+== Screenshots ==
+
+See: http://ahren.org/code/tag/response-tracker+screenshots
 

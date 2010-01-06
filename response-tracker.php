@@ -19,7 +19,7 @@
     Plugin Name: Response Tracker
     Plugin URI:http://ahren.org/code/response-tracker
     Description: A plugin to keep track of responses to comments in the dashboard
-    Version: 0.82
+    Version: 0.90
     Author: Ravi Sarma
     Author URI: http://ahren.org/code/
 */
@@ -42,29 +42,28 @@ function response_tracker($actions, $comment)
     $current    = get_comment_meta($comment->comment_ID, 'tracker_comment_status', true);
     $responded  = get_comment_meta($comment->comment_ID, 'tracker_responded_flag', true);
 
-    if( $current == "" )
-        $current = "todo";
-
     // TODO: this is a hack... need a better way to mark the below.
-    // I am using an empty span and it's class to designate the current status.
-    // This class is then used via jQuery in response-tracker.js to set the
-    // colour of the comment block when the page load completes.
-    if( $current == 'replied' )
-        $curstatusclass = 'trackerstatusreplied';
-    elseif( $current == 'ignore' || $comment->comment_author == $current_user->user_login )
-        $curstatusclass = 'trackerstatusignored';
-    elseif( $responded )
-        $curstatusclass = 'trackerstatusresponded';
+    // I am injecting JavaScript to set the colour of the comment block
+    if( $current == "" )
+    {
+        if( $comment->comment_author == $current_user->user_login )
+            $curstatusclass = 'ignore';
+        elseif( $responded )
+            $curstatusclass = 'responded';
+        else
+            $curstatusclass = "todo";
+        $current = "todo";
+    }
     else
-        $curstatusclass = 'trackerstatustodo';
-    $actions['status'] = "<span class='$curstatusclass'> </span>";
+        $curstatusclass = $current;
 
+    $actions['status'] = "<script language='JavaScript'>colourComment($comment->comment_ID, '$curstatusclass');</script>";
     $actions['status'] .= "Mark: (";
     foreach( array('todo', 'replied', 'ignore') as $status )
     {
         $class = "trackerstatusaction trackeraction$status";
         $class .= ( $status == $current ) ? " trackercurrentselected" : "";
-        $onclick = "onClick='setCommentStatus(this, $comment->comment_ID, \"$status\");'";
+        $onclick = "onClick='setCommentStatus($comment->comment_ID, \"$status\");'";
         $actions['status'] .= " <span class='$class' $onclick>" . ucfirst($status) . "</span>";
     }
     $actions['status'] .= " )";
@@ -77,7 +76,7 @@ function response_tracker_head()
     $plugin_url = WP_PLUGIN_URL . "/response-tracker/";
     print
     "
-        <link href='" . esc_url("$plugin_url/response-tracker.css") .
+        <link href='" . esc_url($plugin_url."response-tracker.css") .
         "' rel= 'stylesheet' type='text/css' />
         <script language='JavaScript' src='" .
          esc_url("$plugin_url/response-tracker.js") .
@@ -162,6 +161,39 @@ function response_tracker_settings()
                 them, be very, very, very patient.
             </dd>
         </dl>
+
+        <br />
+        <br />
+
+        <hr size='1' />
+
+        <h3> Comment Status Colours </h3>
+
+        <table border='0' cellspacing='10'>
+
+        <tr>
+            <td class='trackercommenttodo' style='padding: 3px 8px !important;'><b>Todo</b></td>
+            <td> Comments that require a response </td>
+        </tr>
+        <tr>
+            <td class='trackercommentreplied' style='padding: 3px 8px !important;'><b>Responded</b></td>
+            <td> Comments marked as responded </td>
+        </tr>
+        <tr>
+            <td class='trackercommentignore' style='padding: 3px 8px !important;'><b>Ignored</b></td>
+            <td> Comments marked as ignored or written by post author </td>
+        </tr>
+        <tr>
+            <td class='trackercommentresponded' style='padding: 3px 8px !important;'><b>Responded</b></td>
+            <td> Comments which have a response by post author </td>
+        </tr>
+
+        </table>
+
+        The difference between <b>Replied</b> and <b>Responded</b> is that the comments
+        of the first type ('replied') have been explicitly marked by you (post author)
+        as replied whereas comments of the latter type ('responded') are those that have
+        a response from you but are yet to be explicitly marked as <b>Replied</b>.
 
         </div>
     ";
